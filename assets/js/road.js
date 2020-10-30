@@ -13,6 +13,7 @@ class Road {
         for (n = 0; n < leave; n++) Segment.add(Util.easeInOut(curve, 0, n / leave), Util.easeInOut(startY, endY, (enter + hold + n) / total));
     }
 
+
     static reset() {
         segments = [];
         Road.addStraight(ROAD.LENGTH.LONG);
@@ -28,9 +29,13 @@ class Road {
 
         segments[Segment.find(playerZ).index + 2].color = COLORS.START;
         segments[Segment.find(playerZ).index + 3].color = COLORS.START;
-        for (var n = 0; n < rumbleLength; n++) segments[segments.length - 1 - n].color = COLORS.FINISH;
+        for (var n = 0; n < rumbleLength; n++){
+            segments[segments.length - 1 - n].color = COLORS.FINISH;
+        }
         trackLength = segments.length * segmentLength;
     }
+    
+    
 
     static addStraight(num) {
         num = num || ROAD.LENGTH.MEDIUM;

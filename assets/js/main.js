@@ -31,7 +31,7 @@ let fogDensity = 4; // exponential fog density
 let position = 0; // current camera Z position (add playerZ to get player's absolute Z position)
 let speed = 0; // current speed
 let maxSpeed = segmentLength / step; // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-let maxSpeedKMH = 235;
+let maxSpeedKMH = 435;
 let normalizedSpeed = 0.0;
 let accel = maxSpeed / 5; // acceleration rate - tuned until it 'felt' right
 let breaking = -maxSpeed; // deceleration rate when braking
@@ -49,6 +49,11 @@ let hang = 0;
 let hangDelay = 50;
 let hangTimer = 0;
 let bikeSpriteSelector = 6;
+let lap = 1;
+let displayLap = toString(lap);
+let displaySpeed = 0;
+let speedDisplay = "";
+
 
 
 window.addEventListener(
@@ -65,6 +70,12 @@ const initialize = async () => {
     canvas.height = height;
     canvas.style.backgroundColor = 'black';
     document.getElementById('container').appendChild(canvas);
+
+    // h2 = document.createElement('h2');
+    // document.getElementById('container').appendChild(h2);
+
+    // speedDisplay = document.createElement('h2');
+    // document.getElementById('container').appendChild(speedDisplay);
 
     ctx = canvas.getContext('2d');
     // ctx.imageSmoothingEnabled = false;
@@ -86,6 +97,7 @@ const run = () => {
     let dt = 0;
     let gdt = 0;
 
+
     const frame = () => {
         now = Util.timestamp();
         dt = Math.min(1, (now - last) / 1000);
@@ -105,8 +117,21 @@ const update = (dt) => {
     const speedPercent = speed / maxSpeed;
     const dx = dt * 2 * speedPercent;
     const playerSegment = Segment.find(position + playerZ);
-
+    
     startPosition = position;
+    displayLap = toString(lap);
+    console.log(lap);
+    displayLap = "Lap: " + lap;
+    if(position >= 269800){
+        lap++;
+    }
+    
+    displaySpeed = speed / 100
+    displaySpeed = Math.round(displaySpeed);
+    // displaySpeed = toString(displaySpeed);
+    speedDisplay = "Speed: " + displaySpeed;
+
+    // console.log(speed / 100);
     
     position = Util.increase(position, dt * speed, trackLength);
 
@@ -192,6 +217,16 @@ const render = () => {
 
     let n, i, segment, car, sprite, spriteScale, spriteX, spriteY;
 
+    ctx.fillStyle = "#0000003e";  //<======= here
+    
+    ctx.fillRect(0, 0, 120, 60);
+    ctx.fillRect(490, 0, 150, 60);
+    
+
+    ctx.fillStyle = "black";
+    ctx.fillText(speedDisplay, 510, 30);
+    ctx.fillText(displayLap, 20, 30);
+
     for (n = 0; n < drawDistance; n++) {
         segment = segments[(baseSegment.index + n) % segments.length];
         segment.looped = segment.index < baseSegment.index;
@@ -209,6 +244,7 @@ const render = () => {
         
         Render.segment(ctx, width, lanes, segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
         maxy = segment.p1.screen.y;
+        
     }
 
     for(n=drawDistance-1; n>0; n--){
