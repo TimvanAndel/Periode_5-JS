@@ -53,8 +53,9 @@ let lap = 1;
 let displayLap = toString(lap);
 let displaySpeed = 0;
 let speedDisplay = "";
-
-
+let maxSpeedPercent = 0;
+let speedBar = 0;
+let speedBarColor = "";
 
 window.addEventListener(
     'load',
@@ -131,6 +132,10 @@ const update = (dt) => {
     // displaySpeed = toString(displaySpeed);
     speedDisplay = "Speed: " + displaySpeed;
 
+    maxSpeedPercent = displaySpeed / 120;
+    speedBar = 111 * maxSpeedPercent;
+    console.log(speedBar);
+    // console.log(maxSpeedPercent);
     // console.log(speed / 100);
     
     position = Util.increase(position, dt * speed, trackLength);
@@ -176,9 +181,11 @@ const update = (dt) => {
     if (keySlower) {
         speed = Util.accelerate(speed, breaking, dt);
         brake = 14;
+        speedBarColor = "red";
     } else if (keyFaster) {
         speed = Util.accelerate(speed, accel, dt);
         brake = 0;
+        speedBarColor = "lime";
     } else {
         speed = Util.accelerate(speed, decel, dt);
         brake = 0;
@@ -226,6 +233,12 @@ const render = () => {
     ctx.fillStyle = "black";
     ctx.fillText(speedDisplay, 510, 30);
     ctx.fillText(displayLap, 20, 30);
+
+    ctx.fillRect(508, 40, 115, 16);
+    ctx.fillStyle = speedBarColor;
+
+    
+    ctx.fillRect(510, 42, speedBar, 12);
 
     for (n = 0; n < drawDistance; n++) {
         segment = segments[(baseSegment.index + n) % segments.length];
