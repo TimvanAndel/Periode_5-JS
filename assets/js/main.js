@@ -57,6 +57,32 @@ let maxSpeedPercent = 0;
 let speedBar = 0;
 let speedBarColor = "";
 
+
+
+
+let minutes = 00;
+let seconds = 00; 
+let tens = 00; 
+let appendTens = "00";
+let appendSeconds = "00";
+let appendMinutes = "00";
+let Interval ;
+let timer = "";
+
+let totalMinutes = 00;
+let totalSeconds = 00; 
+let totalTens = 00; 
+let totalAppendTens = "00";
+let totalAppendSeconds = "00";
+let totalAppendMinutes = "00";
+let totalinterval ;
+let totalTimer = "";
+let lap1 = "";
+let lap2 = "";
+let lap3 = "";
+let lap4 = "";
+let lap5 = "";
+
 window.addEventListener(
     'load',
     () => {
@@ -121,12 +147,56 @@ const update = (dt) => {
     
     startPosition = position;
     displayLap = toString(lap);
-    console.log(lap);
-    displayLap = "Lap: " + lap;
-    if(position >= 269800){
-        lap++;
+    // console.log(lap);
+    if(lap < 6){
+        displayLap = "Lap: " + lap;
+    } else {
+        displayLap = "Lap: Finished";
     }
     
+
+
+    if(lap == 2){
+        lap1 = appendMinutes + ":" + appendSeconds + ":" + appendTens;
+    }
+
+    if(lap == 3){
+        lap2 = appendMinutes + ":" + appendSeconds + ":" + appendTens;
+    }
+
+    if(lap == 4){
+        lap3 = appendMinutes + ":" + appendSeconds + ":" + appendTens;
+    }
+
+    if(lap == 5){
+        lap4 = appendMinutes + ":" + appendSeconds + ":" + appendTens;
+        displayLap = "Lap: FinalLap";
+    }
+
+    if(lap == 6){
+        lap5 = appendMinutes + ":" + appendSeconds + ":" + appendTens;
+    }
+
+    
+    // 269800
+    if(position >= 269800){
+        lap++;
+
+        if(lap < 6){
+            tens = 00;
+            seconds = 00;
+            minutes = 00;
+    
+            appendTens = "00";
+            appendSeconds = "00";
+            appendMinutes = "00";
+        } 
+       
+    }
+
+    
+    
+
     displaySpeed = speed / 100
     displaySpeed = Math.round(displaySpeed);
     // displaySpeed = toString(displaySpeed);
@@ -134,7 +204,75 @@ const update = (dt) => {
 
     maxSpeedPercent = displaySpeed / 120;
     speedBar = 111 * maxSpeedPercent;
-    console.log(speedBar);
+    // console.log(speedBar);
+    
+
+    clearInterval(Interval);
+    Interval = setInterval(startTimer, 10);
+
+    function startTimer () {
+        tens++; 
+        totalTens++;
+        
+        if(tens < 9){
+            appendTens = "0" + tens;
+          }
+
+          if(totalTens < 9){
+            totalAppendTens = "0" + totalTens;
+          }
+        
+        if (tens > 9){
+            appendTens = tens;
+          } 
+
+          if (totalTens > 9){
+            totalAppendTens = totalTens;
+          }
+        
+          if (tens > 99) {
+            // console.log("seconds");
+            seconds++;
+            appendSeconds = "0" + seconds;
+            tens = 0;
+            appendTens = "0" + 0;
+        }
+
+        if (totalTens > 99) {   
+            totalSeconds++;
+            totalAppendSeconds = "0" + totalSeconds;
+            totalTens = 0;
+            totalAppendTens = "0" + 0;
+        }
+        
+        if (seconds > 9){
+            appendSeconds = seconds;
+          }
+
+          if (totalSeconds > 9){
+            totalAppendSeconds = totalSeconds;
+          }
+          if(seconds > 59) {
+            minutes++;
+            appendMinutes = "0" + minutes;
+            seconds = 0;
+            appendSeconds = "0" + 0;
+        }
+
+        if(totalSeconds > 59) {
+            totalMinutes++;
+            totalAppendMinutes = "0" + totalMinutes;
+            totalSeconds = 0;
+            totalAppendSeconds = "0" + 0;
+        }
+
+        
+
+        timer = "Current Lap: " + appendMinutes + ":" + appendSeconds + ":" + appendTens;
+        totalTimer = "Total Time: " + totalAppendMinutes + ":" + totalAppendSeconds + ":" + totalAppendTens;
+        // console.log(timer);
+    }
+
     // console.log(maxSpeedPercent);
     // console.log(speed / 100);
     
@@ -224,21 +362,46 @@ const render = () => {
 
     let n, i, segment, car, sprite, spriteScale, spriteX, spriteY;
 
-    ctx.fillStyle = "#0000003e";  //<======= here
+    // transparentBox
+    ctx.fillStyle = "#0000003e";
+    ctx.fillRect(0, 0, 640, 60);
     
-    ctx.fillRect(0, 0, 120, 60);
-    ctx.fillRect(490, 0, 150, 60);
-    
-
+    // displaySpeed, displayLap, lapTimer and totalTime
     ctx.fillStyle = "black";
     ctx.fillText(speedDisplay, 510, 30);
-    ctx.fillText(displayLap, 20, 30);
+    ctx.fillText(displayLap, 20, 35);
+    ctx.fillText(timer, 180, 20);
+    ctx.fillText(totalTimer, 195, 50);
 
+    // speedBar
     ctx.fillRect(508, 40, 115, 16);
     ctx.fillStyle = speedBarColor;
-
-    
     ctx.fillRect(510, 42, speedBar, 12);
+
+
+    if(lap == 6){
+        clearInterval(Interval);
+        accel = decel;
+        
+        ctx.fillStyle = "black";
+        let text = "Finished";
+        let lap1Time = "Lap 1: " + lap1;
+        let lap2Time = "Lap 2: " + lap2;
+        let lap3Time = "Lap 3: " + lap3;
+        let lap4Time = "Lap 4: " + lap4;
+        let lap5Time = "Lap 5: " + lap5;
+        let finishedTextWidth = canvas.width / 2 - ctx.measureText(text).width / 2;
+        let lapTextWidth = canvas.width / 2 - ctx.measureText(lap1Time).width/2;
+
+        ctx.fillText(text, finishedTextWidth, 80);
+        ctx.fillText(lap1Time, lapTextWidth, 100);
+        ctx.fillText(lap2Time, lapTextWidth, 120);
+        ctx.fillText(lap3Time, lapTextWidth, 140);
+        ctx.fillText(lap4Time, lapTextWidth, 160);
+        ctx.fillText(lap5Time, lapTextWidth, 180);
+        
+
+    }
 
     for (n = 0; n < drawDistance; n++) {
         segment = segments[(baseSegment.index + n) % segments.length];

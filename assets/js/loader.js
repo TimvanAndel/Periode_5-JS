@@ -9,7 +9,7 @@ class Loader {
       img.addEventListener('error', (e) => { reject(new Error(`Failed to load image: ${src}`)) });
       img.src = src;
     }).then((img) => {
-      console.log(`Successfully loaded image: ${src}`);
+      // console.log(`Successfully loaded image: ${src}`);
       return img;
     }).catch(error => {
       console.error(error);
@@ -22,7 +22,7 @@ class Loader {
       snd.addEventListener('error', (e) => { reject(new Error(`Failed to load image: ${src}`)) });
       snd.src = src;
     }).then((snd) => {
-      console.log(`Successfully loaded sound: ${src}`);
+      // console.log(`Successfully loaded sound: ${src}`);
       return snd;
     }).catch(error => {
       console.error(error);
