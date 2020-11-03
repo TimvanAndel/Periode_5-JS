@@ -83,6 +83,9 @@ let lap3 = "";
 let lap4 = "";
 let lap5 = "";
 
+let accelSound = new sound("assets/accel.mp3");
+let idleSound = new sound("assets/idle.mp3");
+
 window.addEventListener(
     'load',
     () => {
@@ -103,6 +106,13 @@ const initialize = async () => {
 
     // speedDisplay = document.createElement('h2');
     // document.getElementById('container').appendChild(speedDisplay);
+
+    // accelSound = document.createElement("accel");
+    // accelSound.src = 'accel.mp3';
+    // accelSound.setAttribute("preload", "auto");
+    // accelSound.setAttribute("controls", "none");
+    // accelSound.style.display = "none";
+    // document.body.appendChild(accelSound);
 
     ctx = canvas.getContext('2d');
     // ctx.imageSmoothingEnabled = false;
@@ -140,6 +150,23 @@ const run = () => {
     frame();
     
 };
+
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+
+
 const update = (dt) => {
     const speedPercent = speed / maxSpeed;
     const dx = dt * 2 * speedPercent;
@@ -209,6 +236,8 @@ const update = (dt) => {
 
     clearInterval(Interval);
     Interval = setInterval(startTimer, 10);
+
+    
 
     function startTimer () {
         tens++; 
@@ -324,9 +353,13 @@ const update = (dt) => {
         speed = Util.accelerate(speed, accel, dt);
         brake = 0;
         speedBarColor = "lime";
+
+        accelSound.play();
     } else {
         speed = Util.accelerate(speed, decel, dt);
         brake = 0;
+        accelSound.stop();
+        idleSound.play();
     }
 
     if ((playerX < -1 || playerX > 1) && speed > offRoadLimit) {
