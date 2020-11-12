@@ -389,7 +389,7 @@ const render = () => {
 
     ctx.clearRect(0, 0, width, height);
 
-    Render.background(ctx, background, width, height, BACKGROUND.SKY, skyOffset, resolution * skySpeed * playerY);
+    Render.background(ctx, background, width, height, BACKGROUND.SKY, skyOffset);
     Render.background(ctx, background, width, height, BACKGROUND.HILLS, hillsOffset, resolution * hillsSpeed * playerY);
     Render.background(ctx, background, width, height, BACKGROUND.WOODS, woodsOffset, resolution * woodsSpeed * playerY);
 
